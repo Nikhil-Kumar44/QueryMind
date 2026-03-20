@@ -4,6 +4,12 @@ from typing import Optional, Tuple
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
+# import logging
+# # Suppress harmless "Task exception was never retrieved" and WebSocketClosedError logs
+# logging.getLogger("tornado.access").setLevel(logging.CRITICAL)
+# logging.getLogger("tornado.application").setLevel(logging.CRITICAL)
+# logging.getLogger("tornado.general").setLevel(logging.CRITICAL)
+# logging.getLogger("asyncio").setLevel(logging.CRITICAL)
 
 from query_agent import generate_sql
 from db_utils import is_safe_sql, validate_sql_safety, execute_select
@@ -83,7 +89,7 @@ def main():
             if not user_query.strip():
                 st.warning("Please enter a question.")
             else:
-                with st.spinner("Generating SQL with GPT-4..."):
+                with st.spinner("Generating SQL with Gemini..."):
                     sql_text = generate_sql(user_query.strip(), schema_text.strip())
                 st.session_state.generated_sql = sql_text
                 safe, reason = validate_sql_safety(sql_text)

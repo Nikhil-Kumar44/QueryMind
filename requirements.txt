@@ -2,9 +2,5 @@ streamlit==1.39.0
 python-dotenv==1.0.1
 pandas==2.2.2
 mysql-connector-python==9.0.0
-
-# OpenAI + LangChain compatible trio
-openai>=1.51.0,<2.0.0
 langchain==0.3.6
-langchain-openai==0.2.6
-
+langchain-google-genai>=1.0.1

@@ -6,7 +6,7 @@ from typing import Optional
 
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 
 load_dotenv()
@@ -46,17 +46,17 @@ def _extract_sql_from_markdown(text: str) -> str:
 
 def generate_sql(user_query: str, schema: str) -> str:
     """Generate a single MySQL SELECT statement for the provided question and schema."""
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        raise RuntimeError("OPENAI_API_KEY not set. Add it to your environment or .env file.")
+        raise RuntimeError("GOOGLE_API_KEY not set. Add it to your environment or .env file.")
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", SYSTEM_PROMPT),
         ("user", USER_PROMPT),
     ])
 
-    model = ChatOpenAI(
-        model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+    model = ChatGoogleGenerativeAI(
+        model=os.getenv("GEMINI_MODEL", "gemini-1.5-pro"),
         temperature=0.2,
         max_tokens=400,
         timeout=60,

@@ -45,8 +45,8 @@ pip install -r requirements.txt
 Copy `.env.example` to `.env` and fill in values:
 
 ```bash
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o-mini   # or gpt-4o, gpt-4.1, etc.
+GEMINI_API_KEY=sk-...
+GEMINI_MODEL=gemini-1.5-pro   # or gpt-4o, gpt-4.1, etc.
 
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -102,7 +102,7 @@ Always review the generated SQL before executing.
 ## Notes
 
 - The model quality depends on the quality of schema context you provide in the sidebar.
-- Set `OPENAI_MODEL` in `.env` to your preferred GPT-4 family model.
+- Set `GEMINI_MODEL` in `.env` to your preferred GPT-4 family model.
 
 ## License
 
