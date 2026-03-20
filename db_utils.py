@@ -134,4 +134,39 @@ def execute_select(sql_text: str, db_config: dict) -> Tuple[bool, Union[pd.DataF
     except Exception as exc:  # noqa: BLE001 - surfacing DB errors directly
         return False, str(exc)
 
+def get_database_schema(db_config: dict) -> Tuple[bool, str]:
+    """
+    Connect to MySQL and fetch table names and column definitions.
+    Returns (True, schema_string) or (False, error_message).
+    """
+    try:
+        conn = mysql.connector.connect(
+            host=db_config.get("host"),
+            user=db_config.get("user"),
+            password=db_config.get("password"),
+            database=db_config.get("database"),
+            port=db_config.get("port", 3306),
+        )
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SHOW TABLES")
+            tables = [row[0] for row in cursor.fetchall()]
+            
+            schema_lines = []
+            for table in tables:
+                cursor.execute(f"DESCRIBE {table}")
+                columns = cursor.fetchall()
+                col_defs = []
+                for col in columns:
+                    col_name = col[0]
+                    col_type = col[1].decode('utf-8') if isinstance(col[1], bytes) else col[1]
+                    col_defs.append(f"{col_name} {col_type}")
+                schema_lines.append(f"{table}({', '.join(col_defs)})")
+        finally:
+            conn.close()
 
+        if not schema_lines:
+            return True, "No tables found in database."
+        return True, "\n".join(schema_lines)
+    except Exception as exc:
+        return False, str(exc)

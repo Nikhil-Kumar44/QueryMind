@@ -1,52 +1,56 @@
 # QueryMind
 
-AI-powered SQL Query Generator and safe MySQL executor. Type a question in plain English; QueryMind uses GPT-4 (via OpenAI + LangChain) to generate a MySQL SELECT query, validates it for safety, and executes it. Results are shown in a Streamlit app.
+AI-powered SQL Query Generator and safe MySQL executor. This project has been upgraded to a **traditional full-stack application** featuring a lightning-fast **FastAPI** backend and a beautifully designed **Vanilla HTML/CSS/JS** frontend with a premium glassmorphism dark-mode aesthetic. 
+
+Type a question in plain English; QueryMind uses Gemini (via Google GenAI + LangChain) to generate a MySQL SELECT query, validates it for safety bounds, and executes it. Results are displayed dynamically in a sleek glass-panel UI.
 
 ## Features
 
-- Natural language to SQL using GPT-4 + LangChain
-- Safety checks: SELECT-only, blocks destructive/unsafe statements
-- Auto-adds `LIMIT 100` when missing
-- Executes on MySQL and displays results as a table (pandas)
-- Clean Streamlit UI
+- **Full-stack Architecture**: FastAPI backend + Vanilla JS/HTML/CSS frontend.
+- **Premium UI**: Glassmorphism aesthetic with micro-animations and dark-mode styling.
+- **Natural language to SQL**: Generates SQL using Google GenAI (Gemini) + LangChain.
+- **Safety checks**: Restricts to SELECT-only, blocks destructive/unsafe keywords.
+- **Query limits**: Auto-adds `LIMIT 100` when missing.
+- **Live DB Execution**: Executes on MySQL and renders results asynchronously as HTML tables.
 
 ## Tech Stack
 
-- Python 3.10+
-- OpenAI API (GPT-4)
-- LangChain
-- MySQL (local or remote)
-- mysql-connector-python
-- Streamlit, Pandas
-- python-dotenv
+- **Backend**: Python 3.10+, FastAPI, Uvicorn
+- **AI Integration**: Google Generative AI (Gemini), LangChain
+- **Database**: MySQL (local or remote), mysql-connector-python
+- **Frontend**: Vanilla HTML5, CSS3, JavaScript
+- **Environment**: python-dotenv, pandas
 
 ## Project Structure
 
-```
+```text
 QueryMind/
-├── app.py                # Streamlit UI
-├── query_agent.py        # AI query generator using LangChain + GPT-4
-├── db_utils.py           # DB connection + safe query execution
-├── .env.example          # Template for environment variables
-├── requirements.txt
+├── main.py               # FastAPI server & REST API routes (/api/generate, /api/execute)
+├── static/               # Frontend assets
+│   ├── index.html        # Main application structure
+│   ├── style.css         # Premium glassmorphism styling
+│   └── script.js         # API integration and dynamic UI logic
+├── query_agent.py        # AI query generator logic
+├── db_utils.py           # Database connection & safety checks
+├── requirements.txt      # Python dependencies
 └── README.md
 ```
 
 ## Getting Started
 
-### 1) Clone and install
+### 1 Clone and install requirements
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2) Configure environment
+### 2 Configure environment
 
-Copy `.env.example` to `.env` and fill in values:
+Ensure you have a `.env` file containing the following variables:
 
 ```bash
-GEMINI_API_KEY=sk-...
-GEMINI_MODEL=gemini-1.5-pro   # or gpt-4o, gpt-4.1, etc.
+GOOGLE_API_KEY=AIza...
+GEMINI_MODEL=gemini-1.5-pro
 
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -55,57 +59,35 @@ DB_PASSWORD=
 DB_NAME=test
 ```
 
-### 3) Ensure your MySQL is running
+### 3 Run the application
 
-Schema example (optional but recommended to guide the model):
-
-```sql
-CREATE TABLE employees (
-  id INT PRIMARY KEY,
-  name VARCHAR(255),
-  dept VARCHAR(255),
-  salary INT,
-  join_date DATE
-);
-```
-
-### 4) Run the app
+Spin up the Uvicorn ASGI server:
 
 ```bash
-streamlit run app.py
+uvicorn main:app --reload
 ```
 
-Open the provided URL in your browser.
+Open `http://localhost:8000` in your browser.
 
 ## Usage
 
-1. Enter your question in natural language.
-2. Click "Generate SQL" to see the proposed query and safety verdict.
-3. If it passes safety, click "Run Query" to execute on the configured DB.
+1. **Configure DB**: Use the left sidebar to enter your local/remote MySQL credentials.
+2. **Set Context**: Provide a schema outline in the provided text area to guide the AI.
+3. **Prompt Generating**: Type your plain text question in the main search bar (e.g. "List top 3 employees by salary").
+4. **Generate**: Click "Generate SQL". The AI will generate a safe query, and the UI will present a safety badge indicating whether the query passed database bounds.
+5. **Execute**: Once verified safe, click "Run Query" to retrieve your results in the frontend table.
 
-Example prompts:
+## Safety Measures
 
-- "List top 3 employees by salary."
-- "Show average salary by department."
+QueryMind strictly enforces read-only access:
 
-## Safety
+- Only `SELECT` (or `WITH`) statements are allowed.
+- Multiple statements and destructive keywords (e.g., `INSERT`, `UPDATE`, `DELETE`, `DROP`, `ALTER`, `CREATE`, `TRUNCATE`, `GRANT`, `REVOKE`) are rigorously blocked.
+- Potential exfiltration queries (e.g., `INTO OUTFILE`) are blocked.
+- A default `LIMIT 100` appended at runtime ensures no system lock-up.
 
-QueryMind enforces read-only access:
-
-- Only `SELECT` statements are allowed.
-- Multiple statements and destructive keywords (e.g., `INSERT`, `UPDATE`, `DELETE`, `DROP`, `ALTER`, `CREATE`, `REPLACE`, `TRUNCATE`, `GRANT`, `REVOKE`) are blocked.
-- Potential exfiltration patterns (e.g., `INTO OUTFILE`) are blocked.
-- A default `LIMIT 100` is appended when missing.
-
-Always review the generated SQL before executing.
-
-## Notes
-
-- The model quality depends on the quality of schema context you provide in the sidebar.
-- Set `GEMINI_MODEL` in `.env` to your preferred GPT-4 family model.
+*Always review the generated SQL before executing on a production database.*
 
 ## License
 
 MIT
-
-
