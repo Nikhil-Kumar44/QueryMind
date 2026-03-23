@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import Tuple, Union
 
-import pandas as pd
+
 import mysql.connector
 
 
@@ -101,10 +101,10 @@ def _ensure_limit(sql_text: str, default_limit: int = 100) -> str:
     return f"{trimmed} LIMIT {default_limit}"
 
 
-def execute_select(sql_text: str, db_config: dict) -> Tuple[bool, Union[pd.DataFrame, str]]:
+def execute_select(sql_text: str, db_config: dict) -> Tuple[bool, Union[list, str]]:
     """
     Execute a safe SELECT query against MySQL. Returns (ok, payload).
-    - ok=True: payload is a pandas DataFrame
+    - ok=True: payload is a list of dicts representing the rows
     - ok=False: payload is an error message
     """
     try:
@@ -122,15 +122,13 @@ def execute_select(sql_text: str, db_config: dict) -> Tuple[bool, Union[pd.DataF
             autocommit=True,
         )
         try:
-            cursor = conn.cursor()
+            cursor = conn.cursor(dictionary=True)
             cursor.execute(final_sql)
             rows = cursor.fetchall()
-            columns = [desc[0] for desc in cursor.description] if cursor.description else []
         finally:
             conn.close()
 
-        df = pd.DataFrame(rows, columns=columns)
-        return True, df
+        return True, rows
     except Exception as exc:  # noqa: BLE001 - surfacing DB errors directly
         return False, str(exc)
 

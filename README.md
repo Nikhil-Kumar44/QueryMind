@@ -19,7 +19,7 @@ Type a question in plain English; QueryMind uses Gemini (via Google GenAI + Lang
 - **AI Integration**: Google Generative AI (Gemini), LangChain
 - **Database**: MySQL (local or remote), mysql-connector-python
 - **Frontend**: Vanilla HTML5, CSS3, JavaScript
-- **Environment**: python-dotenv, pandas
+- **Environment**: python-dotenv
 
 ## Project Structure
 

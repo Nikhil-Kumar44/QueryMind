@@ -7,7 +7,6 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-import pandas as pd
 from query_agent import generate_sql
 from db_utils import validate_sql_safety, execute_select, get_database_schema
 
@@ -78,13 +77,10 @@ async def api_execute(req: ExecuteRequest):
     ok, payload = execute_select(req.sql_text, db_config)
     
     if ok:
-        df: pd.DataFrame = payload
-        # Replace NaNs with None for JSON serialization
-        df = df.where(pd.notnull(df), None)
         return {
             "success": True,
-            "rows": len(df),
-            "data": df.to_dict(orient="records")
+            "rows": len(payload),
+            "data": payload
         }
     else:
         return {

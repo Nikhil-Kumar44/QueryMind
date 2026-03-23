@@ -37,7 +37,6 @@ Ensure your `requirements.txt` includes exactly what the app needs to run:
 fastapi
 uvicorn
 python-dotenv==1.0.1
-pandas==2.2.2
 mysql-connector-python==9.0.0
 langchain==0.3.6
 langchain-google-genai>=1.0.1
