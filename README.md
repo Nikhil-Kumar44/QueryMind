@@ -15,7 +15,7 @@ Type a question in plain English; QueryMind uses Gemini (via Google GenAI + Lang
 
 ## Tech Stack
 
-- **Backend**: Python 3.10+, FastAPI, Uvicorn
+- **Backend**: Python 3.14.3, FastAPI, Uvicorn
 - **AI Integration**: Google Generative AI (Gemini), LangChain
 - **Database**: MySQL (local or remote), mysql-connector-python
 - **Frontend**: Vanilla HTML5, CSS3, JavaScript

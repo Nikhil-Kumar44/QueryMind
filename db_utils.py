@@ -61,7 +61,8 @@ def is_safe_sql(sql_text: str) -> bool:
         return False
 
     # Basic destructive keyword scan (allow functions like REPLACE())
-    upper_text = cleaned.upper()
+    without_strings = _strip_string_literals(cleaned)
+    upper_text = without_strings.upper()
     for kw in _DESTRUCTIVE_KEYWORDS:
         if re.search(kw, upper_text, flags=re.IGNORECASE):
             return False
@@ -83,7 +84,8 @@ def validate_sql_safety(sql_text: str) -> Tuple[bool, str]:
         return False, "Multiple statements detected."
     if not re.match(r"^\s*\(*\s*(SELECT|WITH)\b", cleaned, flags=re.IGNORECASE):
         return False, "Only SELECT (or WITH) is allowed."
-    upper_text = cleaned.upper()
+    without_strings = _strip_string_literals(cleaned)
+    upper_text = without_strings.upper()
     for kw in _DESTRUCTIVE_KEYWORDS:
         if re.search(kw, upper_text, flags=re.IGNORECASE):
             return False, "Blocked keyword detected."
@@ -152,7 +154,7 @@ def get_database_schema(db_config: dict) -> Tuple[bool, str]:
             
             schema_lines = []
             for table in tables:
-                cursor.execute(f"DESCRIBE {table}")
+                cursor.execute(f"DESCRIBE `{table}`")
                 columns = cursor.fetchall()
                 col_defs = []
                 for col in columns:
