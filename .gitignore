@@ -30,3 +30,6 @@ Thumbs.db
 # Compiled files
 *.exe
 *.out
+
+# Personal
+querymind_interview_prep.md
